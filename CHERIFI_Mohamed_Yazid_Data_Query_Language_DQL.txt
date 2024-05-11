@@ -1,0 +1,104 @@
+#################################
+#################################
+
+CHERIFI Mohamed Yazid
+Data query language (DQL) Checkpoint
+
+#################################
+#################################
+
+We have the following relational model created. Now we are going to write SQL queries to retrieve data from these tables  using DQL language:
+
+Customer (Customer_id, costumer_Name, costumer_Tel) ,
+Product (Product_id, product_name, category, Price) ,
+Orders (#Customer_id, #Product_id, OrderDate, quantity, total_amount) ,
+
+Instructions
+
+Write SQL commands to:
+
+#################################
+#################################
+
+1- Display all the data of customers.
+
+SELECT * 
+FROM Customer ;
+
+#################################
+
+2- Display the product_name and category for products which their price is between 5000 and 10000.
+
+SELECT product_name, category 
+FROM Product 
+WHERE price >= 5000 AND price <= 10000 ;
+
+#################################
+
+3- Display all the data of products sorted in descending order of price.
+
+SELECT * 
+FROM Product 
+ORDER BY price DESC ;
+
+#################################
+
+4- Display the total number of orders, the average amount, the highest total amount and the lower total amount.
+
+SELECT COUNT(*) AS total, AVG(total_amount) AS moyenne, MAX(total_amount) AS max, MIN(total_amount) AS min
+FROM Orders;
+
+4- For each product_id, display the number of orders
+
+SELECT Product_id, COUNT(*) AS total
+FROM Orders
+GROUP BY Product_id ;
+
+#################################
+
+5- Display the customer_id which has more than 2 orders
+
+SELECT Customer_id, COUNT(*) AS total
+FROM Orders
+GROUP BY Customer_id
+HAVING total > 2 ;
+
+#################################
+
+6- For each month of the 2020 year, display the number of orders
+
+SELECT DATE_FORMAT(OrderDate, '%Y-%m') AS order_date, COUNT(*) AS total_order
+FROM Orders
+WHERE YEAR(OrderDate) = 2020
+GROUP BY order_date ;
+
+#################################
+
+7- For each order, display the product_name, the customer_name and the date of the order
+
+SELECT p.product_name, c.costumer_Name, o.OrderDate
+FROM Orders o
+INNER JOIN Customer c 
+ON o.Customer_id = c.Customer_id AND o.Product_id = p.Product_id ;
+
+#################################
+
+8- Display all the orders made three months ago
+
+SELECT Orders.OrderDate, Customer.costumer_Name, Product.product_name
+FROM Orders
+INNER JOIN Customer 
+ON Orders.Customer_id = Customer.Customer_id AND Orders.Product_id = Product.Product_id
+WHERE Orders.OrderDate >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 MONTH) AND Orders.OrderDate < CURRENT_DATE() ;
+
+#################################
+
+9- Display customers (customer_id) who have never ordered a product.
+
+SELECT Customer.Customer_id
+FROM Customer
+LEFT JOIN Orders 
+ON Customer.Customer_id = Orders.Customer_id
+WHERE Orders.Customer_id IS NULL ;
+
+#################################
